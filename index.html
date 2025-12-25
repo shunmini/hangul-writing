@@ -24,9 +24,18 @@
       touch-action: none;
     }
 
+    /* 결과 한 줄로만 나오게 */
+    #result {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px;
+      white-space: nowrap;
+    }
+
     #result img {
       width: 120px;
-      margin: 5px;
+      flex-shrink: 0;
       border: 1px solid #ddd;
     }
   </style>
@@ -43,15 +52,16 @@
 
 <!-- 2️⃣ 따라쓰기 화면 -->
 <div id="write" style="display:none;">
-  <h2 id="guideChar"></h2>
+  <h2 id="progress"></h2>
   <canvas id="canvas" width="300" height="300"></canvas>
   <br />
-  <button onclick="nextChar()">다음 글자</button>
+  <button id="nextBtn" onclick="nextChar()">다음 글자</button>
 </div>
 
 <!-- 3️⃣ 결과 화면 -->
-<div id="result" style="display:none;">
+<div id="resultScreen" style="display:none;">
   <h2>내가 쓴 글자</h2>
+  <div id="result"></div>
 </div>
 
 <script>
@@ -61,6 +71,7 @@ let drawings = [];
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+const nextBtn = document.getElementById("nextBtn");
 
 let drawing = false;
 
@@ -76,22 +87,32 @@ function start() {
   document.getElementById("write").style.display = "block";
 
   drawGuide();
+  updateButton();
 }
 
 function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // 회색 가이드 글자
   ctx.fillStyle = "#ddd";
   ctx.font = "200px Apple SD Gothic Neo";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(chars[index], canvas.width / 2, canvas.height / 2);
 
-  document.getElementById("guideChar").innerText =
+  document.getElementById("progress").innerText =
     `${index + 1} / ${chars.length}`;
 }
 
-// 터치 그리기
+function updateButton() {
+  if (index === chars.length - 1) {
+    nextBtn.innerText = "완료";
+  } else {
+    nextBtn.innerText = "다음 글자";
+  }
+}
+
+// 터치로 그리기
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   drawing = true;
@@ -115,13 +136,22 @@ canvas.addEventListener("touchend", () => {
   drawing = false;
 });
 
-// 다음 글자
+// 다음 / 완료 버튼
 function nextChar() {
-  drawings.push(canvas.toDataURL());
+  // 👉 현재 캔버스 그대로 저장 (회색 가이드 포함 X)
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  const tctx = tempCanvas.getContext("2d");
+  tctx.putImageData(imageData, 0, 0);
+
+  drawings.push(tempCanvas.toDataURL());
 
   if (index < chars.length - 1) {
     index++;
     drawGuide();
+    updateButton();
   } else {
     showResult();
   }
@@ -130,8 +160,10 @@ function nextChar() {
 // 결과 화면
 function showResult() {
   document.getElementById("write").style.display = "none";
+  document.getElementById("resultScreen").style.display = "block";
+
   const result = document.getElementById("result");
-  result.style.display = "block";
+  result.innerHTML = "";
 
   drawings.forEach(img => {
     const image = document.createElement("img");
