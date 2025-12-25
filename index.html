@@ -1,25 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>한글 따라쓰기</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+
+    input, button {
+      font-size: 18px;
+      padding: 10px;
+      margin: 5px;
+    }
+
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 15px;
+      touch-action: none;
+    }
+
+    #result img {
+      width: 120px;
+      margin: 5px;
+      border: 1px solid #ddd;
+    }
+  </style>
 </head>
 <body>
 
-<h1>한글 따라쓰기</h1>
+<!-- 1️⃣ 시작 화면 -->
+<div id="start">
+  <h2>한글 따라쓰기</h2>
+  <input id="wordInput" placeholder="예: 사과" />
+  <br />
+  <button onclick="start()">시작</button>
+</div>
 
-<p>단어를 입력하세요</p>
+<!-- 2️⃣ 따라쓰기 화면 -->
+<div id="write" style="display:none;">
+  <h2 id="guideChar"></h2>
+  <canvas id="canvas" width="300" height="300"></canvas>
+  <br />
+  <button onclick="nextChar()">다음 글자</button>
+</div>
 
-<input id="word" placeholder="예: 사과" />
-<button onclick="start()">시작</button>
-
-<p id="result"></p>
+<!-- 3️⃣ 결과 화면 -->
+<div id="result" style="display:none;">
+  <h2>내가 쓴 글자</h2>
+</div>
 
 <script>
+let chars = [];
+let index = 0;
+let drawings = [];
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let drawing = false;
+
 function start() {
-  const word = document.getElementById("word").value;
-  document.getElementById("result").innerText = word;
+  const word = document.getElementById("wordInput").value.trim();
+  if (!word) return alert("단어를 입력하세요");
+
+  chars = word.split("");
+  index = 0;
+  drawings = [];
+
+  document.getElementById("start").style.display = "none";
+  document.getElementById("write").style.display = "block";
+
+  drawGuide();
+}
+
+function drawGuide() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#ddd";
+  ctx.font = "200px Apple SD Gothic Neo";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(chars[index], canvas.width / 2, canvas.height / 2);
+
+  document.getElementById("guideChar").innerText =
+    `${index + 1} / ${chars.length}`;
+}
+
+// 터치 그리기
+canvas.addEventListener("touchstart", e => {
+  e.preventDefault();
+  drawing = true;
+  const t = e.touches[0];
+  ctx.beginPath();
+  ctx.moveTo(t.clientX - canvas.offsetLeft, t.clientY - canvas.offsetTop);
+});
+
+canvas.addEventListener("touchmove", e => {
+  e.preventDefault();
+  if (!drawing) return;
+  const t = e.touches[0];
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+  ctx.lineTo(t.clientX - canvas.offsetLeft, t.clientY - canvas.offsetTop);
+  ctx.stroke();
+});
+
+canvas.addEventListener("touchend", () => {
+  drawing = false;
+});
+
+// 다음 글자
+function nextChar() {
+  drawings.push(canvas.toDataURL());
+
+  if (index < chars.length - 1) {
+    index++;
+    drawGuide();
+  } else {
+    showResult();
+  }
+}
+
+// 결과 화면
+function showResult() {
+  document.getElementById("write").style.display = "none";
+  const result = document.getElementById("result");
+  result.style.display = "block";
+
+  drawings.forEach(img => {
+    const image = document.createElement("img");
+    image.src = img;
+    result.appendChild(image);
+  });
 }
 </script>
 
