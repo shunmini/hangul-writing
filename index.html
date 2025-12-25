@@ -45,7 +45,7 @@
 <!-- 1️⃣ 시작 화면 -->
 <div id="start">
   <h2>한글 따라쓰기</h2>
-  <input id="wordInput" placeholder="예: 사과" />
+  <input id="wordInput" placeholder="예: 사랑" />
   <br />
   <button onclick="start()">시작</button>
 </div>
@@ -69,6 +69,10 @@ let chars = [];
 let index = 0;
 let drawings = [];
 
+// ✨ 손글씨만 저장하기 위한 경로 기록
+let paths = [];
+let currentPath = [];
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const nextBtn = document.getElementById("nextBtn");
@@ -82,6 +86,7 @@ function start() {
   chars = word.split("");
   index = 0;
   drawings = [];
+  paths = [];
 
   document.getElementById("start").style.display = "none";
   document.getElementById("write").style.display = "block";
@@ -105,51 +110,58 @@ function drawGuide() {
 }
 
 function updateButton() {
-  if (index === chars.length - 1) {
-    nextBtn.innerText = "완료";
-  } else {
-    nextBtn.innerText = "다음 글자";
-  }
+  nextBtn.innerText =
+    index === chars.length - 1 ? "완료" : "다음 글자";
 }
 
-// 터치로 그리기
+// ✍️ 터치 시작
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   drawing = true;
+  currentPath = [];
+
   const t = e.touches[0];
+  const x = t.clientX - canvas.offsetLeft;
+  const y = t.clientY - canvas.offsetTop;
+
   ctx.beginPath();
-  ctx.moveTo(t.clientX - canvas.offsetLeft, t.clientY - canvas.offsetTop);
+  ctx.moveTo(x, y);
+  currentPath.push({ x, y });
 });
 
+// ✍️ 터치 이동
 canvas.addEventListener("touchmove", e => {
   e.preventDefault();
   if (!drawing) return;
+
   const t = e.touches[0];
+  const x = t.clientX - canvas.offsetLeft;
+  const y = t.clientY - canvas.offsetTop;
+
   ctx.strokeStyle = "#000";
   ctx.lineWidth = 6;
   ctx.lineCap = "round";
-  ctx.lineTo(t.clientX - canvas.offsetLeft, t.clientY - canvas.offsetTop);
+  ctx.lineTo(x, y);
   ctx.stroke();
+
+  currentPath.push({ x, y });
 });
 
+// ✍️ 터치 종료
 canvas.addEventListener("touchend", () => {
   drawing = false;
+  if (currentPath.length > 0) {
+    paths.push(currentPath);
+  }
 });
 
-// 다음 / 완료 버튼
+// 👉 다음 / 완료 버튼
 function nextChar() {
-  // 👉 현재 캔버스 그대로 저장 (회색 가이드 포함 X)
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
-  const tctx = tempCanvas.getContext("2d");
-  tctx.putImageData(imageData, 0, 0);
-
-  drawings.push(tempCanvas.toDataURL());
+  saveHandwritingOnly();
 
   if (index < chars.length - 1) {
     index++;
+    paths = [];
     drawGuide();
     updateButton();
   } else {
@@ -157,7 +169,28 @@ function nextChar() {
   }
 }
 
-// 결과 화면
+// 📸 손글씨만 따로 그려서 저장
+function saveHandwritingOnly() {
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  const tctx = tempCanvas.getContext("2d");
+
+  tctx.strokeStyle = "#000";
+  tctx.lineWidth = 6;
+  tctx.lineCap = "round";
+
+  paths.forEach(path => {
+    tctx.beginPath();
+    tctx.moveTo(path[0].x, path[0].y);
+    path.forEach(p => tctx.lineTo(p.x, p.y));
+    tctx.stroke();
+  });
+
+  drawings.push(tempCanvas.toDataURL());
+}
+
+// 🖼️ 결과 화면
 function showResult() {
   document.getElementById("write").style.display = "none";
   document.getElementById("resultScreen").style.display = "block";
