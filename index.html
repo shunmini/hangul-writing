@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한글 따라쓰기</title>
+</head>
+<body>
+
+<h1>한글 따라쓰기</h1>
+
+<p>단어를 입력하세요</p>
+
+<input id="word" placeholder="예: 사과" />
+<button onclick="start()">시작</button>
+
+<p id="result"></p>
+
+<script>
+function start() {
+  const word = document.getElementById("word").value;
+  document.getElementById("result").innerText = word;
+}
+</script>
+
+</body>
+</html>
