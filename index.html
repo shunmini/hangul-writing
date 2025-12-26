@@ -175,6 +175,22 @@ canvas.addEventListener("touchend", () => {
 
 // 👉 다음 / 완료
 function nextChar() {
+  // 1️⃣ 가이드만 잠깐 제거
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 2️⃣ 손글씨만 다시 그림
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 8;
+  ctx.lineCap = "round";
+
+  paths.forEach(p => {
+    ctx.beginPath();
+    ctx.moveTo(p[0].x, p[0].y);
+    p.forEach(pt => ctx.lineTo(pt.x, pt.y));
+    ctx.stroke();
+  });
+
+  // 3️⃣ 지금 상태를 그대로 저장
   saveHandwritingCanvas();
 
   if (index < chars.length - 1) {
@@ -194,9 +210,8 @@ function saveHandwritingCanvas() {
   temp.height = canvas.height;
   const tctx = temp.getContext("2d");
 
-  // 🔑 현재 캔버스에서 "검정 손글씨만" 복사
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  tctx.putImageData(imageData, 0, 0);
+  // 🔑 현재 캔버스를 그대로 복사 (Safari 안전)
+  tctx.drawImage(canvas, 0, 0);
 
   drawings.push(temp);
 }
