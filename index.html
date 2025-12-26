@@ -8,35 +8,39 @@
   <meta name="apple-mobile-web-app-title" content="글자 따라쓰기">
   <title>글자 따라쓰기</title>
   <style>
-  /* ===== 기본 리셋 & 배경 ===== */
+  /* ===== 1. 전체 배경을 100% 채우기 (하단 흰색 방지 핵심) ===== */
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    width: 100%;
+    min-height: 100%;
   }
   
   body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(180deg, #f7f7f7, #ececec);
+    text-align: center;
   }
   
-  /* ===== 앱 전체 래퍼 (카드 중앙 정렬용) ===== */
+  /* ===== 2. 앱 컨테이너 ===== */
   .app {
     min-height: 100svh;
+    width: 100%;
     box-sizing: border-box;
   
-    /* ⬇️ safe-area 고려 */
-    padding-top: calc(env(safe-area-inset-top) + 32px);
-    padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    /* 🔑 safe-area + 기본 여백을 함께 */
+    padding:
+      calc(env(safe-area-inset-top) + 32px)
+      calc(env(safe-area-inset-right) + 20px)
+      calc(env(safe-area-inset-bottom) + 32px)
+      calc(env(safe-area-inset-left) + 20px);
   
     display: flex;
     justify-content: center;
     align-items: flex-start;
   }
   
-  /* ===== 카드 ===== */
+  /* ===== 3. 카드 ===== */
   .section {
     width: 100%;
     max-width: 420px;
@@ -51,11 +55,11 @@
   
   /* ===== 제목 ===== */
   .section h2 {
-    font-weight: 700;
     margin: 0 0 16px;
+    font-weight: 700;
   }
   
-  /* ===== 중앙 콘텐츠 영역 ===== */
+  /* ===== 중앙 영역 ===== */
   .content-center {
     flex: 1;
     display: flex;
@@ -81,11 +85,6 @@
     border: 1.5px solid #ddd;
     outline: none;
     text-align: center;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
-  }
-  
-  input:focus {
-    border-color: #222;
   }
   
   /* ===== 버튼 ===== */
@@ -99,13 +98,11 @@
     padding: 14px 28px;
     font-size: 17px;
     font-weight: 600;
-    letter-spacing: 0.3px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
   
   button:active {
     transform: scale(0.97);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
   }
   
   /* ===== 캔버스 ===== */
@@ -116,17 +113,7 @@
     touch-action: none;
   }
   
-  /* ===== 진행 텍스트 ===== */
-  #progress {
-    margin-bottom: 12px;
-    font-size: 16px;
-  }
-  
   /* ===== 결과 이미지 ===== */
-  #resultWrapper {
-    width: 100%;
-  }
-  
   #resultWrapper img {
     max-width: 100%;
     height: auto;
@@ -218,7 +205,7 @@ function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // ✅ 가이드 글씨 (stroke & fill 색 통일)
-  ctx.font = "800 260px Apple SD Gothic Neo";
+  ctx.font = "800 250px Apple SD Gothic Neo";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
