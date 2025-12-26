@@ -89,13 +89,8 @@
   </style>
 </head>
 <body>
-  
-<div id="start" class="section">
-<div id="write" class="section" style="display:none;">
-<div id="resultScreen" class="section" style="display:none;">
-  
 <!-- 1️⃣ 시작 화면 -->
-<div id="start">
+<div id="start" class="section">
   <h2>글자 따라쓰기</h2>
   <input id="wordInput" placeholder="예: 사랑" />
   <br />
@@ -103,7 +98,7 @@
 </div>
 
 <!-- 2️⃣ 따라쓰기 화면 -->
-<div id="write" style="display:none;">
+<div id="write" class="section" style="display:none;">
   <h2 id="progress"></h2>
   <canvas id="canvas" width="300" height="300"></canvas>
   <br />
@@ -112,7 +107,7 @@
 </div>
 
 <!-- 3️⃣ 결과 화면 -->
-<div id="resultScreen" style="display:none;">
+<div id="resultScreen" class="section" style="display:none;">
   <h2>내가 쓴 글자</h2>
   <div id="resultWrapper"></div>
   <br />
