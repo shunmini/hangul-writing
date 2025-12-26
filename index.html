@@ -58,7 +58,10 @@
     }
   
     #resultWrapper img {
-      transform-origin: top left;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
     }
   </style>
 </head>
@@ -233,9 +236,6 @@ function showResult() {
 
   const img = document.createElement("img");
   img.src = merged.toDataURL();
-
-  const scale = Math.min(1, window.innerWidth / totalWidth);
-  img.style.transform = `scale(${scale})`;
 
   const wrapper = document.getElementById("resultWrapper");
   wrapper.innerHTML = "";
