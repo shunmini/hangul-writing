@@ -67,17 +67,15 @@
 <script>
 let chars = [];
 let index = 0;
-let drawings = [];
-
-// ✨ 손글씨만 저장하기 위한 경로 기록
 let paths = [];
-let currentPath = [];
+let drawings = [];
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const nextBtn = document.getElementById("nextBtn");
 
 let drawing = false;
+let currentPath = [];
 
 function start() {
   const word = document.getElementById("wordInput").value.trim();
@@ -98,11 +96,16 @@ function start() {
 function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 회색 가이드 글자
-  ctx.fillStyle = "#ddd";
-  ctx.font = "200px Apple SD Gothic Neo";
+  // 🔲 매우 굵은 가이드 글씨
+  ctx.font = "900 220px Apple SD Gothic Neo";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
+
+  ctx.lineWidth = 12;
+  ctx.strokeStyle = "#ddd";
+  ctx.strokeText(chars[index], canvas.width / 2, canvas.height / 2);
+
+  ctx.fillStyle = "#eee";
   ctx.fillText(chars[index], canvas.width / 2, canvas.height / 2);
 
   document.getElementById("progress").innerText =
@@ -114,7 +117,7 @@ function updateButton() {
     index === chars.length - 1 ? "완료" : "다음 글자";
 }
 
-// ✍️ 터치 시작
+// ✍️ 터치 이벤트
 canvas.addEventListener("touchstart", e => {
   e.preventDefault();
   drawing = true;
@@ -129,7 +132,6 @@ canvas.addEventListener("touchstart", e => {
   currentPath.push({ x, y });
 });
 
-// ✍️ 터치 이동
 canvas.addEventListener("touchmove", e => {
   e.preventDefault();
   if (!drawing) return;
@@ -147,17 +149,14 @@ canvas.addEventListener("touchmove", e => {
   currentPath.push({ x, y });
 });
 
-// ✍️ 터치 종료
 canvas.addEventListener("touchend", () => {
   drawing = false;
-  if (currentPath.length > 0) {
-    paths.push(currentPath);
-  }
+  if (currentPath.length) paths.push(currentPath);
 });
 
-// 👉 다음 / 완료 버튼
+// 👉 다음 / 완료
 function nextChar() {
-  saveHandwritingOnly();
+  saveHandwriting();
 
   if (index < chars.length - 1) {
     index++;
@@ -169,40 +168,52 @@ function nextChar() {
   }
 }
 
-// 📸 손글씨만 따로 그려서 저장
-function saveHandwritingOnly() {
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
-  const tctx = tempCanvas.getContext("2d");
+// ✍️ 손글씨만 저장
+function saveHandwriting() {
+  const temp = document.createElement("canvas");
+  temp.width = canvas.width;
+  temp.height = canvas.height;
+  const tctx = temp.getContext("2d");
 
   tctx.strokeStyle = "#000";
   tctx.lineWidth = 6;
   tctx.lineCap = "round";
 
-  paths.forEach(path => {
+  paths.forEach(p => {
     tctx.beginPath();
-    tctx.moveTo(path[0].x, path[0].y);
-    path.forEach(p => tctx.lineTo(p.x, p.y));
+    tctx.moveTo(p[0].x, p[0].y);
+    p.forEach(pt => tctx.lineTo(pt.x, pt.y));
     tctx.stroke();
   });
 
-  drawings.push(tempCanvas.toDataURL());
+  drawings.push(temp);
 }
 
-// 🖼️ 결과 화면
+// 🖼️ 결과 합치기
 function showResult() {
   document.getElementById("write").style.display = "none";
   document.getElementById("resultScreen").style.display = "block";
 
-  const result = document.getElementById("result");
-  result.innerHTML = "";
+  const totalWidth = drawings.length * canvas.width;
+  const merged = document.createElement("canvas");
+  merged.width = totalWidth;
+  merged.height = canvas.height;
 
-  drawings.forEach(img => {
-    const image = document.createElement("img");
-    image.src = img;
-    result.appendChild(image);
+  const mctx = merged.getContext("2d");
+  drawings.forEach((c, i) => {
+    mctx.drawImage(c, i * canvas.width, 0);
   });
+
+  const img = document.createElement("img");
+  img.src = merged.toDataURL();
+
+  // 📏 화면 폭에 맞게 시각적 축소
+  const scale = window.innerWidth / totalWidth;
+  img.style.transform = `scale(${scale < 1 ? scale : 1})`;
+
+  const wrapper = document.getElementById("resultWrapper");
+  wrapper.innerHTML = "";
+  wrapper.appendChild(img);
 }
 </script>
 
