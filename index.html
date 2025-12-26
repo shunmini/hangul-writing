@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="글자 따라쓰기">
@@ -25,9 +25,9 @@
   .app {
     min-height: 100svh; /* iOS PWA 안전 */
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 20px;
+    align-items: flex-start;   /* ⬅️ center → flex-start */
+    padding: 40px 20px 20px;   /* ⬅️ 위쪽 여백으로 위치 조정 */
     box-sizing: border-box;
   }
   
