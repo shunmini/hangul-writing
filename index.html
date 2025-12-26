@@ -10,35 +10,55 @@
       text-align: center;
       margin: 0;
       padding: 20px;
-      background: #f9f9f9;
+      background: linear-gradient(180deg, #f7f7f7, #ececec);
     }
-  
+
+    h2 {
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 16px 28px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+      max-width: 420px;
+      margin: 20px auto;
+    }
+
     input {
-      font-size: 20px;
-      padding: 10px;
+      font-size: 18px;
+      padding: 14px 20px;
       width: 80%;
-      margin-bottom: 20px;
+      border-radius: 999px;
+      border: 1.5px solid #ddd;
+      outline: none;
+      text-align: center;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    
+    input:focus {
+      border-color: #222;
     }
 
     button {
       appearance: none;
       -webkit-appearance: none;
-      width: 64px;
-      height: 64px;
       background: #222;
       color: #fff;
       border: none;
-      border-radius: 50%;
-      font-size: 16px;
+      border-radius: 999px; /* ← 핵심 */
+      padding: 14px 28px;
+      font-size: 17px;
       font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      letter-spacing: 0.3px;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      margin: 6px;
     }
     
     button:active {
-      transform: scale(0.95);
+      transform: scale(0.97);
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
     }
   
@@ -69,7 +89,11 @@
   </style>
 </head>
 <body>
-
+  
+<div id="start" class="section">
+<div id="write" class="section" style="display:none;">
+<div id="resultScreen" class="section" style="display:none;">
+  
 <!-- 1️⃣ 시작 화면 -->
 <div id="start">
   <h2>글자 따라쓰기</h2>
