@@ -6,37 +6,59 @@
   <title>한글 따라쓰기</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       text-align: center;
       margin: 0;
       padding: 20px;
+      background: #f9f9f9;
     }
-
-    input, button {
+  
+    input {
+      font-size: 20px;
+      padding: 10px;
+      width: 80%;
+      margin-bottom: 20px;
+    }
+  
+    button {
+      appearance: none;
+      -webkit-appearance: none;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 28px;
       font-size: 18px;
-      padding: 10px;
-      margin: 5px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
-
-    canvas {
-      border: 1px solid #ccc;
-      margin-top: 15px;
+  
+    button:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+  
+    #canvas {
+      border: 2px solid #ddd;
+      border-radius: 14px;
+      background: #fff;
       touch-action: none;
+      margin-bottom: 12px;
     }
-
-    /* 결과 한 줄로만 나오게 */
-    #result {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 10px;
-      white-space: nowrap;
+  
+    #progress {
+      margin: 10px 0;
+      font-size: 16px;
     }
-
-    #result img {
-      width: 120px;
-      flex-shrink: 0;
-      border: 1px solid #ddd;
+  
+    #resultWrapper {
+      width: 100%;
+      overflow: hidden;
+    }
+  
+    #resultWrapper img {
+      transform-origin: top left;
     }
   </style>
 </head>
@@ -96,20 +118,17 @@ function start() {
 function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🔲 매우 굵은 가이드 글씨
+  // ✅ 가이드 글씨 (stroke & fill 색 통일)
   ctx.font = "900 220px Apple SD Gothic Neo";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.lineWidth = 12;
-  ctx.strokeStyle = "#ddd";
+  ctx.lineWidth = 14;
+  ctx.strokeStyle = "#e0e0e0";
+  ctx.fillStyle = "#e0e0e0";
+
   ctx.strokeText(chars[index], canvas.width / 2, canvas.height / 2);
-
-  ctx.fillStyle = "#eee";
   ctx.fillText(chars[index], canvas.width / 2, canvas.height / 2);
-
-  document.getElementById("progress").innerText =
-    `${index + 1} / ${chars.length}`;
 }
 
 function updateButton() {
@@ -156,7 +175,7 @@ canvas.addEventListener("touchend", () => {
 
 // 👉 다음 / 완료
 function nextChar() {
-  saveHandwriting();
+  saveHandwritingCanvas();
 
   if (index < chars.length - 1) {
     index++;
@@ -168,8 +187,8 @@ function nextChar() {
   }
 }
 
-// ✍️ 손글씨만 저장
-function saveHandwriting() {
+// ✅ 손글씨만 그린 캔버스를 저장
+function saveHandwritingCanvas() {
   const temp = document.createElement("canvas");
   temp.width = canvas.width;
   temp.height = canvas.height;
@@ -189,7 +208,7 @@ function saveHandwriting() {
   drawings.push(temp);
 }
 
-// 🖼️ 결과 합치기
+// 🖼️ 결과 화면 (여러 글자 → 1개 이미지)
 function showResult() {
   document.getElementById("write").style.display = "none";
   document.getElementById("resultScreen").style.display = "block";
@@ -207,9 +226,8 @@ function showResult() {
   const img = document.createElement("img");
   img.src = merged.toDataURL();
 
-  // 📏 화면 폭에 맞게 시각적 축소
-  const scale = window.innerWidth / totalWidth;
-  img.style.transform = `scale(${scale < 1 ? scale : 1})`;
+  const scale = Math.min(1, window.innerWidth / totalWidth);
+  img.style.transform = `scale(${scale})`;
 
   const wrapper = document.getElementById("resultWrapper");
   wrapper.innerHTML = "";
