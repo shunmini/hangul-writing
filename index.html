@@ -105,10 +105,13 @@ const nextBtn = document.getElementById("nextBtn");
 let drawing = false;
 let currentPath = [];
 let resultImageSrc = "";
+let inputWord = "";
 
 function start() {
   const word = document.getElementById("wordInput").value.trim();
   if (!word) return alert("단어를 입력하세요");
+  
+  inputWord = word;
 
   chars = word.split("");
   index = 0;
@@ -213,8 +216,13 @@ function nextChar() {
 // ✅ 해당 손글씨 삭제
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // ❗ 손글씨 경로도 같이 초기화
+  paths = [];
+
+  // ✅ 가이드 글씨 다시 그리기
+  drawGuide();
 }
-  document.getElementById("clearBtn").addEventListener("click", clearCanvas);
 
 // ✅ 손글씨만 그린 캔버스를 저장
 function saveHandwritingCanvas() {
@@ -226,7 +234,7 @@ function saveHandwritingCanvas() {
   // 🔑 현재 캔버스를 그대로 복사 (Safari 안전)
   tctx.drawImage(canvas, 0, 0);
 
-  drawings.push(temp);
+  drawings[index] = temp;
 }
 
 // 🖼️ 결과 화면 (여러 글자 → 1개 이미지)
@@ -260,7 +268,7 @@ document.getElementById("saveImageBtn").addEventListener("click", () => {
 
   const link = document.createElement("a");
   link.href = resultImageSrc;
-  link.download = "hangul-writing.png";
+  link.download = `${inputWord}.png`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
