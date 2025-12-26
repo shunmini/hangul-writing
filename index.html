@@ -35,7 +35,7 @@
     /* ===== 카드 ===== */
     .section {
       position: relative;
-      z-index: 1;
+      z-index: 0;
     
       width: 100%;
       max-width: 420px;
@@ -53,8 +53,13 @@
       display: flex;
       flex-direction: column;
     }
-  
-    .section::after {
+
+    .section > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section::before {
       content: "";
       position: absolute;
       left: 16px;
@@ -64,12 +69,14 @@
     
       background: linear-gradient(
         to bottom,
-        rgba(0, 0, 0, 0.36),
+        rgba(0, 0, 0, 0.24),
         rgba(0, 0, 0, 0)
       );
     
-      filter: blur(24px);
-      z-index: -1;
+      filter: blur(28px);
+    
+      z-index: -1;           /* 🔑 카드보다 확실히 뒤 */
+      pointer-events: none;
     }
   
     /* ===== 제목 ===== */
