@@ -80,6 +80,7 @@
   <h2 id="progress"></h2>
   <canvas id="canvas" width="300" height="300"></canvas>
   <br />
+  <button id="clearBtn">지우기</button>
   <button id="nextBtn" onclick="nextChar()">다음 글자</button>
 </div>
 
@@ -87,6 +88,8 @@
 <div id="resultScreen" style="display:none;">
   <h2>내가 쓴 글자</h2>
   <div id="resultWrapper"></div>
+  <br />
+  <button id="saveImageBtn">사진으로 저장</button>
 </div>
 
 <script>
@@ -101,6 +104,7 @@ const nextBtn = document.getElementById("nextBtn");
 
 let drawing = false;
 let currentPath = [];
+let resultImageSrc = "";
 
 function start() {
   const word = document.getElementById("wordInput").value.trim();
@@ -206,6 +210,12 @@ function nextChar() {
   }
 }
 
+// ✅ 해당 손글씨 삭제
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+  document.getElementById("clearBtn").addEventListener("click", clearCanvas);
+
 // ✅ 손글씨만 그린 캔버스를 저장
 function saveHandwritingCanvas() {
   const temp = document.createElement("canvas");
@@ -234,13 +244,27 @@ function showResult() {
     mctx.drawImage(c, i * canvas.width, 0);
   });
 
+  resultImageSrc = merged.toDataURL();
+
   const img = document.createElement("img");
-  img.src = merged.toDataURL();
+  img.src = resultImageSrc;
 
   const wrapper = document.getElementById("resultWrapper");
   wrapper.innerHTML = "";
   wrapper.appendChild(img);
 }
+
+// 🖼️ 손글씨 사진 앨범 저장
+document.getElementById("saveImageBtn").addEventListener("click", () => {
+  if (!resultImageSrc) return;
+
+  const link = document.createElement("a");
+  link.href = resultImageSrc;
+  link.download = "hangul-writing.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
 </script>
 
 </body>
