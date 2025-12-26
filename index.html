@@ -75,7 +75,7 @@
   <h2>글자 따라쓰기</h2>
   <input id="wordInput" placeholder="예: 사랑" />
   <br />
-  <button onclick="start()">시작하기</button>
+  <button onclick="start()">시작</button>
 </div>
 
 <!-- 2️⃣ 따라쓰기 화면 -->
@@ -83,8 +83,8 @@
   <h2 id="progress"></h2>
   <canvas id="canvas" width="300" height="300"></canvas>
   <br />
-  <button id="clearBtn" onclick="clearCanvas()">지우기</button>
-  <button id="nextBtn" onclick="nextChar()">다음 글자</button>
+  <button id="clearBtn" onclick="clearCanvas()">삭제</button>
+  <button id="nextBtn" onclick="nextChar()">다음</button>
 </div>
 
 <!-- 3️⃣ 결과 화면 -->
@@ -92,7 +92,7 @@
   <h2>내가 쓴 글자</h2>
   <div id="resultWrapper"></div>
   <br />
-  <button id="saveImageBtn">저장하기</button>
+  <button id="saveImageBtn">저장</button>
 </div>
 
 <script>
