@@ -123,7 +123,7 @@ function drawGuide() {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.lineWidth = 14;
+  ctx.lineWidth = 10;
   ctx.strokeStyle = "#e0e0e0";
   ctx.fillStyle = "#e0e0e0";
 
@@ -194,16 +194,9 @@ function saveHandwritingCanvas() {
   temp.height = canvas.height;
   const tctx = temp.getContext("2d");
 
-  tctx.strokeStyle = "#000";
-  tctx.lineWidth = 6;
-  tctx.lineCap = "round";
-
-  paths.forEach(p => {
-    tctx.beginPath();
-    tctx.moveTo(p[0].x, p[0].y);
-    p.forEach(pt => tctx.lineTo(pt.x, pt.y));
-    tctx.stroke();
-  });
+  // 🔑 현재 캔버스에서 "검정 손글씨만" 복사
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  tctx.putImageData(imageData, 0, 0);
 
   drawings.push(temp);
 }
