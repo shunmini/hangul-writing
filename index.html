@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>한글 따라쓰기</title>
+  <title>글자 따라쓰기</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -69,10 +69,10 @@
 
 <!-- 1️⃣ 시작 화면 -->
 <div id="start">
-  <h2>한글 따라쓰기</h2>
+  <h2>글자 따라쓰기</h2>
   <input id="wordInput" placeholder="예: 사랑" />
   <br />
-  <button onclick="start()">시작</button>
+  <button onclick="start()">시작하기</button>
 </div>
 
 <!-- 2️⃣ 따라쓰기 화면 -->
@@ -89,7 +89,7 @@
   <h2>내가 쓴 글자</h2>
   <div id="resultWrapper"></div>
   <br />
-  <button id="saveImageBtn">사진으로 저장</button>
+  <button id="saveImageBtn">저장하기</button>
 </div>
 
 <script>
@@ -109,7 +109,7 @@ let inputWord = "";
 
 function start() {
   const word = document.getElementById("wordInput").value.trim();
-  if (!word) return alert("단어를 입력하세요");
+  if (!word) return alert("단어를 입력하세요.");
   
   inputWord = word;
 
@@ -133,7 +133,7 @@ function drawGuide() {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.lineWidth = 10;
+  ctx.lineWidth = 8;
   ctx.strokeStyle = "#e0e0e0";
   ctx.fillStyle = "#e0e0e0";
 
