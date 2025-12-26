@@ -18,17 +18,22 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(180deg, #f7f7f7, #ececec);
-    text-align: center;
   }
   
   /* ===== 앱 전체 래퍼 (카드 중앙 정렬용) ===== */
   .app {
-    min-height: 100svh; /* iOS PWA 안전 */
+    min-height: 100svh;
+    box-sizing: border-box;
+  
+    /* ⬇️ safe-area 고려 */
+    padding-top: calc(env(safe-area-inset-top) + 32px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  
     display: flex;
     justify-content: center;
-    align-items: flex-start;   /* ⬅️ center → flex-start */
-    padding: 40px 20px 20px;   /* ⬅️ 위쪽 여백으로 위치 조정 */
-    box-sizing: border-box;
+    align-items: flex-start;
   }
   
   /* ===== 카드 ===== */
@@ -213,7 +218,7 @@ function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // ✅ 가이드 글씨 (stroke & fill 색 통일)
-  ctx.font = "800 220px Apple SD Gothic Neo";
+  ctx.font = "800 260px Apple SD Gothic Neo";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
