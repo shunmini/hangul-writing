@@ -209,15 +209,15 @@ let currentPath = [];
 let resultImageSrc = "";
 let inputWord = "";
 
-function start() {
+async function start() {
   const word = document.getElementById("wordInput").value.trim();
   if (!word) return alert("단어를 입력하세요.");
-  
+
   inputWord = word;
 
   // 🔑 폰트 로드 기다리기 (iOS Safari 대응)
   await document.fonts.ready;
-  
+
   chars = word.split("");
   index = 0;
   drawings = [];
