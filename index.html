@@ -215,10 +215,6 @@ async function start() {
   if (!word) return alert("단어를 입력하세요.");
 
   inputWord = word;
-
-  // 🔑 폰트 로드 기다리기 (iOS Safari 대응)
-  await document.fonts.ready;
-
   chars = word.split("");
   index = 0;
   drawings = [];
@@ -226,6 +222,9 @@ async function start() {
 
   document.getElementById("start").style.display = "none";
   document.getElementById("write").style.display = "block";
+
+  // 🔑 폰트 로딩
+  await document.fonts.load("700 250px 'Nanum Gothic'");
 
   drawGuide();
   updateButton();
@@ -239,7 +238,7 @@ function drawGuide() {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.lineWidth = 8;
+  ctx.lineWidth = 6;
   ctx.strokeStyle = "#e0e0e0";
   ctx.fillStyle = "#e0e0e0";
 
