@@ -7,8 +7,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="글자 따라쓰기">
   <title>글자 따라쓰기</title>
-  <link rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@800&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
   <style>
     /* ===== 기본 리셋 ===== */
     html, body {
@@ -234,7 +235,7 @@ function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // ✅ 가이드 글씨 (stroke & fill 색 통일)
-  ctx.font = "800 250px 'Nanum Gothic'";
+  ctx.font = "700 250px 'Nanum Gothic', 'Apple SD Gothic Neo', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
