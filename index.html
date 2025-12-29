@@ -210,7 +210,22 @@ let currentPath = [];
 let resultImageSrc = "";
 let inputWord = "";
 
+// ✅ 나눔고딕 폰트 사전 로딩
+async function preloadNanumGothic() {
+  const font = new FontFace(
+    "Nanum Gothic",
+    "url(https://fonts.gstatic.com/s/nanumgothic/v23/PN_3Rfi-oW3hYwmKDpxS7F_z.woff2)",
+    { weight: "700" }
+  );
+
+  await font.load();
+  document.fonts.add(font);
+}
+
 async function start() {
+  // 🔑 캔버스용 폰트 강제 로딩 (iOS Safari 대응)
+  await preloadNanumGothic();
+
   const word = document.getElementById("wordInput").value.trim();
   if (!word) return alert("단어를 입력하세요.");
 
