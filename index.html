@@ -212,22 +212,32 @@ let inputWord = "";
 
 // ✅ 나눔고딕 폰트 사전 로딩
 async function preloadNanumGothic() {
-  const font = new FontFace(
-    "Nanum Gothic",
-    "url(https://fonts.gstatic.com/s/nanumgothic/v23/PN_3Rfi-oW3hYwmKDpxS7F_z.woff2)",
-    { weight: "700" }
-  );
+  try {
+    if (!("FontFace" in window)) return;
 
-  await font.load();
-  document.fonts.add(font);
+    const font = new FontFace(
+      "Nanum Gothic",
+      "url(https://fonts.gstatic.com/s/nanumgothic/v23/PN_3Rfi-oW3hYwmKDpxS7F_z.woff2)",
+      { weight: "700" }
+    );
+
+    await font.load();
+    document.fonts.add(font);
+  } catch (e) {
+    // ❗ 폰트 로딩 실패해도 앱은 계속 진행
+    console.warn("Nanum Gothic preload failed:", e);
+  }
 }
 
 async function start() {
-  // 🔑 캔버스용 폰트 강제 로딩 (iOS Safari 대응)
+  // 🔑 폰트는 시도만 하고, 실패해도 진행
   await preloadNanumGothic();
 
   const word = document.getElementById("wordInput").value.trim();
-  if (!word) return alert("단어를 입력하세요.");
+  if (!word) {
+    alert("단어를 입력하세요.");
+    return;
+  }
 
   inputWord = word;
   chars = word.split("");
@@ -237,9 +247,6 @@ async function start() {
 
   document.getElementById("start").style.display = "none";
   document.getElementById("write").style.display = "block";
-
-  // 🔑 폰트 로딩
-  await document.fonts.load("700 250px 'Nanum Gothic'");
 
   drawGuide();
   updateButton();
