@@ -374,15 +374,47 @@ function showResult() {
 }
 
 // 🖼️ 손글씨 사진 앨범 저장
-document.getElementById("saveImageBtn").addEventListener("click", () => {
+function dataURLToBlob(dataURL) {
+  const [header, base64] = dataURL.split(",");
+  const mime = header.match(/:(.*?);/)[1];
+  const binary = atob(base64);
+  const array = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i++) {
+    array[i] = binary.charCodeAt(i);
+  }
+
+  return new Blob([array], { type: mime });
+}
+
+document.getElementById("saveImageBtn").addEventListener("click", async () => {
   if (!resultImageSrc) return;
 
-  const link = document.createElement("a");
-  link.href = resultImageSrc;
-  link.download = `${inputWord}.png`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  // DataURL → Blob
+  const blob = await (await fetch(resultImageSrc)).blob();
+
+  // 🔑 파일명 여기서 지정
+  const file = new File(
+    [blob],
+    `${inputWord}.png`,
+    { type: "image/png" }
+  );
+
+  // 📤 모바일 공유
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({
+      files: [file],
+      title: inputWord,
+    });
+  } else {
+    // 🔙 fallback: PC에서는 다운로드
+    const link = document.createElement("a");
+    link.href = resultImageSrc;
+    link.download = `${inputWord}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 });
 
 // ✅ 처음 화면으로 돌아가기
