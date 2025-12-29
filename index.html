@@ -166,7 +166,7 @@
       </div>
 
       <div class="button-row">
-        <button id="startBtn" onclick="start()" disabled>시작</button>
+        <button id="startBtn" onclick="start()">시작</button>
       </div>
     </div>
 
@@ -250,10 +250,6 @@ async function start() {
   drawGuide();
   updateButton();
 }
-
-window.addEventListener("load", () => {
-  preloadNanumGothic();
-});
 
 function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
