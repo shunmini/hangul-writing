@@ -155,15 +155,18 @@
 </head>
 <body>
 
-  <!-- 🔑 나눔고딕 캔버스 워밍업용 (보이지 않음) -->
   <span id="font-preload"
+    aria-hidden="true"
     style="
-      position: absolute;
+      position: fixed;
+      top: -10000px;
+      left: -10000px;
       opacity: 0;
       pointer-events: none;
       font-family: 'Nanum Gothic', sans-serif;
       font-weight: 700;
       font-size: 250px;
+      white-space: nowrap;
     ">
     가나다라마바사아자차카타파하
   </span>
