@@ -121,7 +121,11 @@
       transform: scale(0.97);
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
     }
-  
+    
+    button:disabled {
+      opacity: 0.4;
+    }
+    
     /* ===== 캔버스 ===== */
     #canvas {
       border: 2px solid #ddd;
@@ -162,7 +166,7 @@
       </div>
 
       <div class="button-row">
-        <button onclick="start()">시작</button>
+        <button id="startBtn" onclick="start()" disabled>시작</button>
       </div>
     </div>
 
@@ -209,12 +213,18 @@ let drawing = false;
 let currentPath = [];
 let resultImageSrc = "";
 let inputWord = "";
+let fontReady = false;
+
+// ✅ 시작 버튼 활성화
+function enableStartButton() {
+  const btn = document.getElementById("startBtn");
+  btn.disabled = false;
+  btn.style.opacity = "1";
+}
 
 // ✅ 나눔고딕 폰트 사전 로딩
 async function preloadNanumGothic() {
   try {
-    if (!("FontFace" in window)) return;
-
     const font = new FontFace(
       "Nanum Gothic",
       "url(https://fonts.gstatic.com/s/nanumgothic/v23/PN_3Rfi-oW3hYwmKDpxS7F_z.woff2)",
@@ -223,15 +233,21 @@ async function preloadNanumGothic() {
 
     await font.load();
     document.fonts.add(font);
+
+    // 🔑 브라우저 내부 폰트셋 준비 완료까지 대기
+    await document.fonts.ready;
+
+    fontReady = true;
+    enableStartButton();
   } catch (e) {
-    // ❗ 폰트 로딩 실패해도 앱은 계속 진행
-    console.warn("Nanum Gothic preload failed:", e);
+    console.warn("Font preload failed", e);
+    fontReady = true; // 실패해도 진행은 허용
+    enableStartButton();
   }
 }
 
-async function start() {
-  // 🔑 폰트는 시도만 하고, 실패해도 진행
-  await preloadNanumGothic();
+function start() {
+  if (!fontReady) return;
 
   const word = document.getElementById("wordInput").value.trim();
   if (!word) {
@@ -251,6 +267,10 @@ async function start() {
   drawGuide();
   updateButton();
 }
+
+window.addEventListener("load", () => {
+  preloadNanumGothic();
+});
 
 function drawGuide() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
