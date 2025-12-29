@@ -155,6 +155,19 @@
 </head>
 <body>
 
+  <!-- 🔑 나눔고딕 캔버스 워밍업용 (보이지 않음) -->
+  <span id="font-preload"
+    style="
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      font-family: 'Nanum Gothic', sans-serif;
+      font-weight: 700;
+      font-size: 250px;
+    ">
+    가나다라마바사아자차카타파하
+  </span>
+  
   <div class="app">
 
     <!-- 1️⃣ 시작 화면 -->
@@ -215,19 +228,12 @@ let resultImageSrc = "";
 let inputWord = "";
 let fontReady = false;
 
-// ✅ 시작 버튼 활성화
-function enableStartButton() {
-  const btn = document.getElementById("startBtn");
-  btn.disabled = false;
-  btn.style.opacity = "1";
-}
+// ✅ Canvas 전에 DOM으로 폰트 강제 사용
+async function warmUpNanumGothic() {
+  // 1️⃣ CSS 폰트 로딩
+  await document.fonts.load("700 250px 'Nanum Gothic'");
 
-// ✅ iOS PWA 캔버스 폰트 안정화용 대기 함수
-async function waitForFontAndFrame() {
-  // 폰트 CSS 로딩 완료 대기
-  await document.fonts.ready;
-
-  // iOS PWA 캔버스 렌더 타이밍 보정 (중요)
+  // 2️⃣ 실제 DOM 렌더 한 프레임 보장
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => requestAnimationFrame(r));
 }
@@ -245,7 +251,7 @@ async function start() {
   document.getElementById("start").style.display = "none";
   document.getElementById("write").style.display = "block";
 
-  await waitForFontAndFrame();
+  await warmUpNanumGothic();
 
   drawGuide();
   updateButton();
